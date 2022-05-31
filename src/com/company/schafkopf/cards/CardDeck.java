@@ -1,6 +1,7 @@
 package com.company.schafkopf.cards;
 
 import com.company.schafkopf.game.GameType;
+import com.company.template.cards.ICard;
 import com.company.template.cards.IDeck;
 import com.company.template.cards.ISuit;
 
@@ -11,10 +12,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+
+/**
+ * CardDeck
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public class CardDeck implements IDeck {
 
     private final List<SchafkopfCard> deck;
-    private SchafkopfCard playedWizardCard = null;
+    private SchafkopfCard firstPlayedSchafkopfCard = null;
     private ISuit trump = SchafkopfSuit.HERZ;
     private GameType type = GameType.NORMAL;
 
@@ -32,26 +40,29 @@ public class CardDeck implements IDeck {
         this.deck = wizardCards;
     }
 
-    public void add(SchafkopfCard wizardCard) {
-        this.deck.add(wizardCard);
+    @Override
+    public void add(ICard wizardCard) {
+        this.deck.add((SchafkopfCard) wizardCard);
     }
 
-    public boolean remove(SchafkopfCard wizardCard) {
-        return this.deck.remove(wizardCard);
+    @Override
+    public boolean remove(ICard schafkopfCard) {
+        return this.deck.remove((SchafkopfCard) schafkopfCard);
     }
 
     public List<SchafkopfCard> getDeck() {
         return this.deck;
     }
 
-    public SchafkopfCard getPlayedCard() {
-        return playedWizardCard;
+    public SchafkopfCard getFirstPlayedCard() {
+        return firstPlayedSchafkopfCard;
     }
 
-    public void setPlayedCard(SchafkopfCard playedWizardCard) {
-        this.playedWizardCard = playedWizardCard;
+    public void setFirstPlayedCard(SchafkopfCard playedWizardCard) {
+        this.firstPlayedSchafkopfCard = playedWizardCard;
     }
 
+    @Override
     public ISuit getTrump() {
         return trump;
     }
@@ -214,7 +225,7 @@ public class CardDeck implements IDeck {
             //dealing with queen
             if (o1.rank == SchafkopfRank.QUEEN || o2.rank == SchafkopfRank.QUEEN) {
                 if (o1.rank == SchafkopfRank.QUEEN && o2.rank == SchafkopfRank.QUEEN) {
-                    return o1.suit.compareTo(o2.suit);
+                    return o1.compareTo(o2);
                 } else if (o1.rank == SchafkopfRank.QUEEN) {
                     return 1;
                 }
@@ -222,7 +233,7 @@ public class CardDeck implements IDeck {
                 //handling jack
             } else if (o1.rank == SchafkopfRank.JACK || o2.rank == SchafkopfRank.JACK) {
                 if (o1.rank == SchafkopfRank.JACK && o2.rank == SchafkopfRank.JACK) {
-                    return o1.suit.compareTo(o2.suit);
+                    return o1.compareTo(o2);
                 } else if (o1.rank == SchafkopfRank.JACK) {
                     return 1;
                 }
@@ -239,11 +250,11 @@ public class CardDeck implements IDeck {
             }
 
             //card is played SchafkopfSuit
-            else if (playedWizardCard != null) {
-                if (o1.suit == playedWizardCard.suit || o2.suit == playedWizardCard.suit) {
-                    if (o1.suit == playedWizardCard.suit && o2.suit == playedWizardCard.suit) {
+            else if (firstPlayedSchafkopfCard != null) {
+                if (o1.suit == firstPlayedSchafkopfCard.suit || o2.suit == firstPlayedSchafkopfCard.suit) {
+                    if (o1.suit == firstPlayedSchafkopfCard.suit && o2.suit == firstPlayedSchafkopfCard.suit) {
                         return o1.rank.compareTo(o2.rank);
-                    } else if (o1.suit == playedWizardCard.suit) {
+                    } else if (o1.suit == firstPlayedSchafkopfCard.suit) {
                         return 1;
                     }
                     return -1;
@@ -260,7 +271,7 @@ public class CardDeck implements IDeck {
             //handling jack
             if (o1.rank == SchafkopfRank.JACK || o2.rank == SchafkopfRank.JACK) {
                 if (o1.rank == SchafkopfRank.JACK && o2.rank == SchafkopfRank.JACK) {
-                    return o1.suit.compareTo(o2.suit);
+                    return o1.compareTo(o2);
                 } else if (o1.rank == SchafkopfRank.JACK) {
                     return 1;
                 }
@@ -268,11 +279,11 @@ public class CardDeck implements IDeck {
             }
 
             //card is played SchafkopfSuit
-            else if (playedWizardCard != null) {
-                if (o1.suit == playedWizardCard.suit || o2.suit == playedWizardCard.suit) {
-                    if (o1.suit == playedWizardCard.suit && o2.suit == playedWizardCard.suit) {
+            else if (firstPlayedSchafkopfCard != null) {
+                if (o1.suit == firstPlayedSchafkopfCard.suit || o2.suit == firstPlayedSchafkopfCard.suit) {
+                    if (o1.suit == firstPlayedSchafkopfCard.suit && o2.suit == firstPlayedSchafkopfCard.suit) {
                         return o1.rank.compareTo(o2.rank);
-                    } else if (o1.suit == playedWizardCard.suit) {
+                    } else if (o1.suit == firstPlayedSchafkopfCard.suit) {
                         return 1;
                     }
                     return -1;
@@ -297,11 +308,11 @@ public class CardDeck implements IDeck {
             }
 
             //card is played SchafkopfSuit
-            else if (playedWizardCard != null) {
-                if (o1.suit == playedWizardCard.suit || o2.suit == playedWizardCard.suit) {
-                    if (o1.suit == playedWizardCard.suit && o2.suit == playedWizardCard.suit) {
+            else if (firstPlayedSchafkopfCard != null) {
+                if (o1.suit == firstPlayedSchafkopfCard.suit || o2.suit == firstPlayedSchafkopfCard.suit) {
+                    if (o1.suit == firstPlayedSchafkopfCard.suit && o2.suit == firstPlayedSchafkopfCard.suit) {
                         return o1.rank.compareTo(o2.rank);
-                    } else if (o1.suit == playedWizardCard.suit) {
+                    } else if (o1.suit == firstPlayedSchafkopfCard.suit) {
                         return 1;
                     }
                     return -1;

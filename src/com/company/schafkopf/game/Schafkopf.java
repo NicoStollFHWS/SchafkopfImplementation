@@ -2,15 +2,21 @@ package com.company.schafkopf.game;
 
 import com.company.schafkopf.cards.CardDeck;
 import com.company.schafkopf.cards.SchafkopfCard;
-import com.company.schafkopf.game.GameType;
 import com.company.template.Player;
 import com.company.template.cards.ICard;
-import com.company.template.game.IGame;
+import com.company.template.cards.ISuit;
+import com.company.template.game.Game;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Schafkopf implements IGame {
+/**
+ * Schafkopf
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
+public class Schafkopf extends Game {
     private final Queue<Player> players;
     private int stichCounter = 0;
     private Queue<Player> currentRound;
@@ -20,6 +26,7 @@ public class Schafkopf implements IGame {
     private List<Player> team2;
 
     public Schafkopf(Queue<Player> players) {
+        super();
         if(players.size() == 4) {
             this.players = new ArrayDeque<>(players);
             initializeRound();
@@ -128,7 +135,6 @@ public class Schafkopf implements IGame {
     }
 
 
-    //TODO fehler sorgt dafür, dass ein spieler entfernt wird
     @Override
     public void setTrick(Player player, int trick) {
 
@@ -198,7 +204,7 @@ public class Schafkopf implements IGame {
                         this.currentRound.remove();
 
                         //Karte aus der Hand des Spielers entfernen
-                        temp.getDeck().remove((SchafkopfCard) card);
+                        temp.getDeck().remove(card);
 
                         //Karte ausspielen auf Tisch
                         this.playedCard.add((SchafkopfCard) card);
@@ -207,7 +213,7 @@ public class Schafkopf implements IGame {
                         //wenn erste Karte gespielt wurde muss für alle Karten angezeigt werden, ob sie spielbar sind
                         if (this.playedCard.getDeck().size() == 1) {
                             System.out.println("Playable setzen für Spieler");
-                            this.playedCard.setPlayedCard((SchafkopfCard) card);
+                            this.playedCard.setFirstPlayedCard((SchafkopfCard) card);
                             this.players.forEach(p -> p.getDeck().setPlayable((SchafkopfCard) card));
                         }
 
@@ -227,6 +233,31 @@ public class Schafkopf implements IGame {
         } else {
             System.err.println("Spieler ist nicht am Zug, er kann keine Karte legen");
         }
+    }
+
+    @Override
+    public ISuit getTrump() {
+        return this.playedCard.getTrump();
+    }
+
+    @Override
+    public List<ICard> getPlayedCards() {
+        return null;
+    }
+
+    @Override
+    public String getStats() {
+        return null;
+    }
+
+    @Override
+    public String getCurrentUser() {
+        return null;
+    }
+
+    @Override
+    public List<Player> getPlayers() {
+        return null;
     }
 
     public void assesStich() {

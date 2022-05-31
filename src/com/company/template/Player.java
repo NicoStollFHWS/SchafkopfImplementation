@@ -1,16 +1,22 @@
 package com.company.template;
 
 import com.company.schafkopf.cards.CardDeck;
-import com.company.schafkopf.cards.SchafkopfCard;
 import com.company.template.cards.ICard;
+import com.company.template.cards.IDeck;
 
 import java.util.ArrayList;
 
+/**
+ * Player
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public class Player {
     private String name;
     private int point = 0;
     private int statesTrick;    //ist hier das gewünschte spiel für die runde
-    private CardDeck deck;
+    private IDeck deck;
     private ICard playedCard = null;
 
     public Player(String name)
@@ -21,7 +27,7 @@ public class Player {
     }
 
     public void addCard(ICard card) {
-        this.deck.add((SchafkopfCard) card);
+        this.deck.add(card);
     }
 
     public void addPoint(int points) {
@@ -44,7 +50,7 @@ public class Player {
         return this.statesTrick;
     }
 
-    public CardDeck getDeck() {
+    public IDeck getDeck() {
         return this.deck;
     }
 

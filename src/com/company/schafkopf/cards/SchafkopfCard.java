@@ -1,7 +1,15 @@
 package com.company.schafkopf.cards;
 
 import com.company.template.cards.ICard;
+import com.company.template.cards.IRank;
+import com.company.template.cards.ISuit;
 
+/**
+ * SchafkopfCard
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public class SchafkopfCard implements ICard {
     protected final SchafkopfSuit suit;
     protected final SchafkopfRank rank;
@@ -23,12 +31,12 @@ public class SchafkopfCard implements ICard {
     }
 
     @Override
-    public SchafkopfSuit getSuit() {
+    public ISuit getSuit() {
         return suit;
     }
 
     @Override
-    public SchafkopfRank getRank() {
+    public IRank getRank() {
         return rank;
     }
 
@@ -39,5 +47,10 @@ public class SchafkopfCard implements ICard {
                 ", rank=" + rank +
                 ", playable=" + playable +
                 '}' + "\n";
+    }
+
+    @Override
+    public int compareTo(ICard cw) {
+        return this.suit.compareTo(((SchafkopfCard) cw).suit);
     }
 }

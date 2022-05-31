@@ -1,12 +1,27 @@
 package com.company.template.cards;
 
-import com.company.schafkopf.cards.SchafkopfRank;
-import com.company.schafkopf.cards.SchafkopfSuit;
-
+/**
+ * ICard
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public interface ICard {
-    SchafkopfSuit getSuit();
-    SchafkopfRank getRank();
+    ISuit getSuit();
+    IRank getRank();
     void setPlayable(boolean playable);
     boolean isPlayable();
+    String toString();
+    int compareTo(ICard cw);
+
+    //wofür werden die jeweils benötigt
+    /**
+    void setSuit(String suit);
+    String getSuitString();
+    int getNumberValue();
+    String getNumberVal();
+    void setNumber(String number);
+    void setNumberValue(int numberValue);
+    */
 
 }
