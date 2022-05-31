@@ -1,9 +1,16 @@
-package com.company;
+package com.company.schafkopf.game;
+
+import com.company.schafkopf.cards.CardDeck;
+import com.company.schafkopf.cards.SchafkopfCard;
+import com.company.schafkopf.game.GameType;
+import com.company.template.Player;
+import com.company.template.cards.ICard;
+import com.company.template.game.IGame;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Schafkopf implements IGame{
+public class Schafkopf implements IGame {
     private final Queue<Player> players;
     private int stichCounter = 0;
     private Queue<Player> currentRound;
@@ -31,10 +38,10 @@ public class Schafkopf implements IGame{
         deck.shuffleDeck();
 
         //Karten verteilen
-        List<Card> cards = deck.getDeck();
-        while(cards.size() != 0) {
+        List<SchafkopfCard> schafkopfCards = deck.getDeck();
+        while(schafkopfCards.size() != 0) {
             for(Player p : this.players) {
-                ICard card = cards.remove(0);
+                ICard card = schafkopfCards.remove(0);
                 p.addCard(card);
             }
         }
@@ -44,7 +51,7 @@ public class Schafkopf implements IGame{
 
         //alle Karten auf playable setzen
         this.players.forEach(p -> {
-            p.getDeck().getDeck().forEach(card -> card.setPlayable(true));
+            p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true));
         });
 
         //alle Karten sortieren
@@ -77,7 +84,7 @@ public class Schafkopf implements IGame{
 
         //alle Karten auf playable setzen
         this.players.forEach(p -> {
-            p.getDeck().getDeck().forEach(card -> card.setPlayable(true));
+            p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true));
         });
 
         //teams setzen
@@ -182,26 +189,26 @@ public class Schafkopf implements IGame{
         //TODO schauen ob karte spielbar ist
         if(temp.equals(player)) {
             if(temp.getStatesTrick() != -1) {
-                if(temp.getDeck().getDeck().contains((Card) card)) {
+                if(temp.getDeck().getDeck().contains((SchafkopfCard) card)) {
                     if(card.isPlayable()) {
 
-                        System.err.println((Card) card);
+                        System.err.println((SchafkopfCard) card);
 
                         //spieler vom Beginn der Schlange entfernen
                         this.currentRound.remove();
 
                         //Karte aus der Hand des Spielers entfernen
-                        temp.getDeck().remove((Card) card);
+                        temp.getDeck().remove((SchafkopfCard) card);
 
                         //Karte ausspielen auf Tisch
-                        this.playedCard.add((Card) card);
+                        this.playedCard.add((SchafkopfCard) card);
                         player.setPlayedCard(card);
 
                         //wenn erste Karte gespielt wurde muss für alle Karten angezeigt werden, ob sie spielbar sind
                         if (this.playedCard.getDeck().size() == 1) {
                             System.out.println("Playable setzen für Spieler");
-                            this.playedCard.setPlayedCard((Card) card);
-                            this.players.forEach(p -> p.getDeck().setPlayable((Card) card));
+                            this.playedCard.setPlayedCard((SchafkopfCard) card);
+                            this.players.forEach(p -> p.getDeck().setPlayable((SchafkopfCard) card));
                         }
 
                         //auswertung wenn jeder spieler eine Karte gelegt hat
@@ -229,7 +236,7 @@ public class Schafkopf implements IGame{
         this.playedCard.sortDeck();
 
         //höchste Karte finden
-        Card max = this.playedCard.getDeck().get(0);
+        SchafkopfCard max = this.playedCard.getDeck().get(0);
 
         //spieler finden der die höchste Karte gelegt hat
         Player temp = this.players.stream()
@@ -239,7 +246,7 @@ public class Schafkopf implements IGame{
 
         //Punkte berechnen die in diesem Stich liegen
         int points = this.playedCard.getDeck().stream()
-                .mapToInt(c -> c.getRank().value).sum();
+                .mapToInt(c -> c.getRank().getValue()).sum();
 
         //Punkt vergeben an Spieler
         temp.addPoint(points);

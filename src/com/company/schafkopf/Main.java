@@ -1,7 +1,9 @@
-package com.company;
+package com.company.schafkopf;
+
+import com.company.schafkopf.game.Schafkopf;
+import com.company.template.Player;
 
 import java.util.ArrayDeque;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
 

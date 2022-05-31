@@ -1,11 +1,13 @@
-package com.company;
+package com.company.schafkopf.cards;
 
-public class Card implements ICard{
-    protected final Suit suit;
-    protected final Rank rank;
+import com.company.template.cards.ICard;
+
+public class SchafkopfCard implements ICard {
+    protected final SchafkopfSuit suit;
+    protected final SchafkopfRank rank;
     protected boolean playable = false;
 
-    protected Card(Suit suit, Rank rank) {
+    protected SchafkopfCard(SchafkopfSuit suit, SchafkopfRank rank) {
         this.suit = suit;
         this.rank = rank;
     }
@@ -21,18 +23,18 @@ public class Card implements ICard{
     }
 
     @Override
-    public Suit getSuit() {
+    public SchafkopfSuit getSuit() {
         return suit;
     }
 
     @Override
-    public Rank getRank() {
+    public SchafkopfRank getRank() {
         return rank;
     }
 
     @Override
     public String toString() {
-        return "Card{" +
+        return "SchafkopfCard{" +
                 "suit=" + suit +
                 ", rank=" + rank +
                 ", playable=" + playable +
