@@ -1,11 +1,11 @@
-package com.company.schafkopf.game;
+package main.java.com.company.schafkopf.game;
 
-import com.company.schafkopf.cards.CardDeck;
-import com.company.schafkopf.cards.SchafkopfCard;
-import com.company.template.Player;
-import com.company.template.cards.ICard;
-import com.company.template.cards.ISuit;
-import com.company.template.game.Game;
+import main.java.com.company.schafkopf.cards.CardDeck;
+import main.java.com.company.schafkopf.cards.SchafkopfCard;
+import main.java.com.company.template.Player;
+import main.java.com.company.template.cards.ICard;
+import main.java.com.company.template.cards.ISuit;
+import main.java.com.company.template.game.Game;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,12 +40,15 @@ public class Schafkopf extends Game {
         //counter auf 0 setzen
         this.stichCounter = 0;
 
+        //playerDecks erstellen
+        this.players.forEach(p -> p.setDeck(new CardDeck(new ArrayList<>())));
+
         //Kartendeck erstellen
         CardDeck deck = new CardDeck();
         deck.shuffleDeck();
 
         //Karten verteilen
-        List<SchafkopfCard> schafkopfCards = deck.getDeck();
+        List<SchafkopfCard> schafkopfCards = (List<SchafkopfCard>) deck.getDeck();
         while(schafkopfCards.size() != 0) {
             for(Player p : this.players) {
                 ICard card = schafkopfCards.remove(0);
@@ -245,19 +248,15 @@ public class Schafkopf extends Game {
         return null;
     }
 
-    @Override
-    public String getStats() {
-        return null;
-    }
 
     @Override
-    public String getCurrentUser() {
-        return null;
+    public Player getCurrentUser() {
+        return this.currentRound.peek();
     }
 
     @Override
     public List<Player> getPlayers() {
-        return null;
+        return new ArrayList<>(this.currentRound);
     }
 
     public void assesStich() {
@@ -267,7 +266,7 @@ public class Schafkopf extends Game {
         this.playedCard.sortDeck();
 
         //höchste Karte finden
-        SchafkopfCard max = this.playedCard.getDeck().get(0);
+        SchafkopfCard max = ((List<SchafkopfCard>) this.playedCard.getDeck()).get(0);
 
         //spieler finden der die höchste Karte gelegt hat
         Player temp = this.players.stream()

@@ -1,8 +1,7 @@
-package com.company.template;
+package main.java.com.company.template;
 
-import com.company.schafkopf.cards.CardDeck;
-import com.company.template.cards.ICard;
-import com.company.template.cards.IDeck;
+import main.java.com.company.template.cards.ICard;
+import main.java.com.company.template.cards.IDeck;
 
 import java.util.ArrayList;
 
@@ -23,11 +22,14 @@ public class Player {
     {
         this.name = name;
         this.statesTrick = -1;
-        this.deck = new CardDeck(new ArrayList<>());
     }
 
     public void addCard(ICard card) {
         this.deck.add(card);
+    }
+
+    public void setDeck(IDeck deck) {
+        this.deck = deck;
     }
 
     public void addPoint(int points) {

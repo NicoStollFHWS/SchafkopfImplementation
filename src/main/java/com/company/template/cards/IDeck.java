@@ -1,8 +1,8 @@
-package com.company.template.cards;
+package main.java.com.company.template.cards;
 
-import com.company.schafkopf.cards.SchafkopfCard;
-import com.company.schafkopf.cards.SchafkopfSuit;
-import com.company.schafkopf.game.GameType;
+import main.java.com.company.schafkopf.cards.SchafkopfCard;
+import main.java.com.company.schafkopf.cards.SchafkopfSuit;
+import main.java.com.company.schafkopf.game.GameType;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,11 +22,11 @@ public interface IDeck {
     void add(ICard card);
     boolean remove(ICard card);
 
-    List<SchafkopfCard> getDeck();
+    List<? extends ICard> getDeck();
 
     String printCards();
 
-    void setPlayable(SchafkopfCard card);
+    void setPlayable(ICard first);
 
     void setType(GameType gameType);
 }

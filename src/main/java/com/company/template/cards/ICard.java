@@ -1,4 +1,4 @@
-package com.company.template.cards;
+package main.java.com.company.template.cards;
 
 /**
  * ICard
@@ -8,7 +8,9 @@ package com.company.template.cards;
  */
 public interface ICard {
     ISuit getSuit();
+    void setSuit(ISuit suit);
     IRank getRank();
+    void setRank(IRank rank);
     void setPlayable(boolean playable);
     boolean isPlayable();
     String toString();
@@ -16,11 +18,9 @@ public interface ICard {
 
     //wofür werden die jeweils benötigt
     /**
-    void setSuit(String suit);
     String getSuitString();
     int getNumberValue();
     String getNumberVal();
-    void setNumber(String number);
     void setNumberValue(int numberValue);
     */
 

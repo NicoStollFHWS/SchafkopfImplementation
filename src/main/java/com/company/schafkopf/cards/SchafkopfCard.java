@@ -1,8 +1,8 @@
-package com.company.schafkopf.cards;
+package main.java.com.company.schafkopf.cards;
 
-import com.company.template.cards.ICard;
-import com.company.template.cards.IRank;
-import com.company.template.cards.ISuit;
+import main.java.com.company.template.cards.ICard;
+import main.java.com.company.template.cards.IRank;
+import main.java.com.company.template.cards.ISuit;
 
 /**
  * SchafkopfCard
@@ -11,8 +11,8 @@ import com.company.template.cards.ISuit;
  * @since 2022-05-31
  */
 public class SchafkopfCard implements ICard {
-    protected final SchafkopfSuit suit;
-    protected final SchafkopfRank rank;
+    protected SchafkopfSuit suit;
+    protected SchafkopfRank rank;
     protected boolean playable = false;
 
     protected SchafkopfCard(SchafkopfSuit suit, SchafkopfRank rank) {
@@ -36,8 +36,18 @@ public class SchafkopfCard implements ICard {
     }
 
     @Override
+    public void setSuit(ISuit suit) {
+        this.suit = (SchafkopfSuit) suit;
+    }
+
+    @Override
     public IRank getRank() {
         return rank;
+    }
+
+    @Override
+    public void setRank(IRank rank) {
+        this.rank = (SchafkopfRank) rank;
     }
 
     @Override

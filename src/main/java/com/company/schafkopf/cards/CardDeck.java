@@ -1,9 +1,9 @@
-package com.company.schafkopf.cards;
+package main.java.com.company.schafkopf.cards;
 
-import com.company.schafkopf.game.GameType;
-import com.company.template.cards.ICard;
-import com.company.template.cards.IDeck;
-import com.company.template.cards.ISuit;
+import main.java.com.company.schafkopf.game.GameType;
+import main.java.com.company.template.cards.ICard;
+import main.java.com.company.template.cards.IDeck;
+import main.java.com.company.template.cards.ISuit;
 
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class CardDeck implements IDeck {
         return this.deck.remove((SchafkopfCard) schafkopfCard);
     }
 
-    public List<SchafkopfCard> getDeck() {
+    public List<? extends ICard> getDeck() {
         return this.deck;
     }
 
@@ -85,7 +85,8 @@ public class CardDeck implements IDeck {
         return out.toString();
     }
 
-    public void setPlayable(SchafkopfCard firstPlayed) {
+    public void setPlayable(ICard first) {
+        SchafkopfCard firstPlayed = (SchafkopfCard) first;
         long numCardWithSameSuitAsFirstPlayer = this.deck.stream()
                 .filter(c -> c.getRank() != SchafkopfRank.QUEEN && c.getRank() != SchafkopfRank.JACK)
                 .filter(c -> c.getSuit() == firstPlayed.getSuit()).count();

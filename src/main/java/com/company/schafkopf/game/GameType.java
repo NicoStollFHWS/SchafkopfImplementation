@@ -1,4 +1,4 @@
-package com.company.schafkopf.game;
+package main.java.com.company.schafkopf.game;
 
 /**
  * GameType

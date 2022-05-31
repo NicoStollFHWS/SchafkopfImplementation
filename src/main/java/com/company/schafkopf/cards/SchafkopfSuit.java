@@ -1,6 +1,6 @@
-package com.company.schafkopf.cards;
+package main.java.com.company.schafkopf.cards;
 
-import com.company.template.cards.ISuit;
+import main.java.com.company.template.cards.ISuit;
 
 /**
  * SchafkopfSuit

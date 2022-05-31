@@ -1,4 +1,4 @@
-package com.company.template.cards;
+package main.java.com.company.template.cards;
 
 /**
  * IRank

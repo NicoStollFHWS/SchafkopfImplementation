@@ -1,8 +1,8 @@
-package com.company.template.game;
+package main.java.com.company.template.game;
 
-import com.company.template.Player;
-import com.company.template.cards.ICard;
-import com.company.template.cards.ISuit;
+import main.java.com.company.template.Player;
+import main.java.com.company.template.cards.ICard;
+import main.java.com.company.template.cards.ISuit;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public abstract class Game {
 
     abstract public ISuit getTrump();
     abstract public List<ICard> getPlayedCards();
-    abstract public String getCurrentUser();
+    abstract public Player getCurrentUser();
     abstract public List<Player> getPlayers();
 
     public long getGameStart() {
