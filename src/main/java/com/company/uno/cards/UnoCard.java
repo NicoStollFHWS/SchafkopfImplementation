@@ -8,11 +8,12 @@ import main.java.com.company.template.cards.ISuit;
  * UnoCard
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public class UnoCard implements ICard {
-    private ISuit suit;
-    private IRank rank;
+    private final ISuit suit;
+    private final IRank rank;
     private boolean playable = false;
 
     public UnoCard(ISuit suit, IRank rank) {

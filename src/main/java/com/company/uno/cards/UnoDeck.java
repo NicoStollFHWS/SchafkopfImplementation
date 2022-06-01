@@ -7,7 +7,6 @@ import main.java.com.company.template.cards.ISuit;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -15,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * UnoDeck
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public class UnoDeck implements IDeck {

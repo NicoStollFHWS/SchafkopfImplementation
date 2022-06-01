@@ -4,6 +4,7 @@ package main.java.com.company.template.cards;
  * ICard
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public interface ICard {

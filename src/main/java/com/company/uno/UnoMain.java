@@ -12,6 +12,7 @@ import java.util.Scanner;
  * UnoMain
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public class UnoMain {

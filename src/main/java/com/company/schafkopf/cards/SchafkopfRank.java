@@ -6,9 +6,10 @@ import main.java.com.company.template.cards.IRank;
  * SchafkopfRank
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
-public enum SchafkopfRank implements IRank {
+enum SchafkopfRank implements IRank {
     SEVEN(0), EIGTH(0), NINE(0), KING(4), TEN(10), ACE(11), JACK(2), QUEEN(3);
 
     private final int value;

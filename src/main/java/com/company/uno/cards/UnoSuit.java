@@ -6,6 +6,7 @@ import main.java.com.company.template.cards.ISuit;
  * UnoSuit
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public enum UnoSuit implements ISuit {

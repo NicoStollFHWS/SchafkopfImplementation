@@ -8,11 +8,12 @@ import main.java.com.company.template.cards.ISuit;
  * SchafkopfCard
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public class SchafkopfCard implements ICard {
-    protected SchafkopfSuit suit;
-    protected SchafkopfRank rank;
+    private final SchafkopfSuit suit;
+    private final SchafkopfRank rank;
     protected boolean playable = false;
 
     protected SchafkopfCard(SchafkopfSuit suit, SchafkopfRank rank) {

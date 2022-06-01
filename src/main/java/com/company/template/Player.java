@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Player
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public class Player {

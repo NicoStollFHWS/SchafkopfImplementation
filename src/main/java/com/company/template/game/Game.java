@@ -10,6 +10,7 @@ import java.util.List;
  * Game
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public abstract class Game {

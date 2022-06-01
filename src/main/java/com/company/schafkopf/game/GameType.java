@@ -4,6 +4,7 @@ package main.java.com.company.schafkopf.game;
  * GameType
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 public enum GameType {
