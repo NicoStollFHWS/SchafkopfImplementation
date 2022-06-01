@@ -1,6 +1,6 @@
 package main.java.com.company.schafkopf.game;
 
-import main.java.com.company.schafkopf.cards.CardDeck;
+import main.java.com.company.schafkopf.cards.SchafkopfDeck;
 import main.java.com.company.schafkopf.cards.SchafkopfCard;
 import main.java.com.company.template.Player;
 import main.java.com.company.template.cards.ICard;
@@ -20,7 +20,7 @@ public class Schafkopf extends Game {
     private final Queue<Player> players;
     private int stichCounter = 0;
     private Queue<Player> currentRound;
-    private CardDeck playedCard = new CardDeck(new ArrayList<>());
+    private SchafkopfDeck playedCard = new SchafkopfDeck(new ArrayList<>());
     private GameType gameType = GameType.NORMAL;
     private List<Player> team1;
     private List<Player> team2;
@@ -41,10 +41,10 @@ public class Schafkopf extends Game {
         this.stichCounter = 0;
 
         //playerDecks erstellen
-        this.players.forEach(p -> p.setDeck(new CardDeck(new ArrayList<>())));
+        this.players.forEach(p -> p.setDeck(new SchafkopfDeck(new ArrayList<>())));
 
         //Kartendeck erstellen
-        CardDeck deck = new CardDeck();
+        SchafkopfDeck deck = new SchafkopfDeck();
         deck.shuffleDeck();
 
         //Karten verteilen
@@ -90,7 +90,7 @@ public class Schafkopf extends Game {
         this.currentRound.forEach(player -> player.setPlayedCard(null));
 
         //map der gespielten Karten -> neue map
-        this.playedCard = new CardDeck(new ArrayList<>());
+        this.playedCard = new SchafkopfDeck(new ArrayList<>());
 
         //alle Karten auf playable setzen
         this.players.forEach(p -> {
@@ -291,7 +291,8 @@ public class Schafkopf extends Game {
         }
     }
 
-    public void assessRound() {
+    //TODO neue runde starten und punkte speichern
+    private void assessRound() {
 
         int pointsTeam1 = team1.stream().mapToInt(Player::getPoints).sum();
         int pointsTeam2 = team2.stream().mapToInt(Player::getPoints).sum();

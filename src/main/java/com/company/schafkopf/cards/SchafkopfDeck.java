@@ -14,19 +14,19 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
- * CardDeck
+ * SchafkopfDeck
  *
  * @author Vladimir Bauer
  * @since 2022-05-31
  */
-public class CardDeck implements IDeck {
+public class SchafkopfDeck implements IDeck {
 
     private final List<SchafkopfCard> deck;
     private SchafkopfCard firstPlayedSchafkopfCard = null;
     private ISuit trump = SchafkopfSuit.HERZ;
     private GameType type = GameType.NORMAL;
 
-    public CardDeck() {
+    public SchafkopfDeck() {
         this.deck = new ArrayList<>();
 
         for(SchafkopfSuit s : SchafkopfSuit.values()) {
@@ -36,7 +36,7 @@ public class CardDeck implements IDeck {
         }
     }
 
-    public CardDeck(List<SchafkopfCard> wizardCards) {
+    public SchafkopfDeck(List<SchafkopfCard> wizardCards) {
         this.deck = wizardCards;
     }
 
