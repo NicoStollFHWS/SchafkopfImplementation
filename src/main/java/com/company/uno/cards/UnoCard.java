@@ -4,6 +4,12 @@ import main.java.com.company.template.cards.ICard;
 import main.java.com.company.template.cards.IRank;
 import main.java.com.company.template.cards.ISuit;
 
+/**
+ * UnoCard
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public class UnoCard implements ICard {
     private ISuit suit;
     private IRank rank;
@@ -19,20 +25,12 @@ public class UnoCard implements ICard {
         return this.suit;
     }
 
-    @Override
-    public void setSuit(ISuit suit) {
-        this.suit = suit;
-    }
 
     @Override
     public IRank getRank() {
         return this.rank;
     }
 
-    @Override
-    public void setRank(IRank rank) {
-        this.rank = rank;
-    }
 
     @Override
     public void setPlayable(boolean playable) {

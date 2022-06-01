@@ -11,6 +11,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * UnoDeck
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public class UnoDeck implements IDeck {
     private List<UnoCard> cards;
 

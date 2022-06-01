@@ -13,9 +13,16 @@ import main.java.com.company.uno.cards.UnoSuit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
+/**
+ * UnoGame
+ *
+ * @author Vladimir Bauer
+ * @since 2022-05-31
+ */
 public class UnoGame extends Game {
-    private Queue<Player> players;
+    private final Queue<Player> players;
     private List<ICard> cards;
     private UnoDeck playedCards;
     private int cardsToDrawCounter;
@@ -103,7 +110,12 @@ public class UnoGame extends Game {
 
     @Override
     public void playCard(Player player, ICard card) {
+        if(this.chooseColor) {
+            System.out.println("Es muss erste eine Farbe gewählt werden");
+            return;
+        }
         //checken ob Spieler am Zug ist
+        assert this.players.peek() != null;
         if(this.players.peek().equals(player)) {
 
             //checken, ob Karte auf der Hand des Spielers ist
@@ -128,43 +140,104 @@ public class UnoGame extends Game {
     }
 
     private void playPlusFour(UnoCard card) {
+        this.playedCards.add(card);
 
+        //add four cards to next players hand
+        this.cardsToDrawCounter += card.getRank().getValue();
+
+        //spieler nach derzeitigem muss die karten ziehen
+        List<Player> temp = new ArrayList<>(players);
+        drawCards(temp.get(1));
+
+        //fabe wählen
+        this.chooseColor = true;
     }
 
     private void playPlusTwo(UnoCard card) {
+        this.playedCards.add(card);
 
+        //cardsToDrawIncrement
+        this.cardsToDrawCounter += card.getRank().getValue();
+
+        //rotatePlayers
+        rotatePlayers();
+
+        //prüfen ob nächster Spieler +2 auf der hand hat
+        boolean nextPlayerHasPlusTwo = this.players.peek().getDeck().getDeck()
+                .stream()
+                .anyMatch(c -> c.getRank().equals(UnoRank.TAKE_TWO));
+
+        //wenn er keine hat werden die karten direkt gezogen
+        if(nextPlayerHasPlusTwo == false) {
+            drawCards(this.players.peek());
+        }
     }
 
     private void playReverse(UnoCard card) {
+        this.playedCards.add(card);
+
+        //reverse queue
+        Stack<Player> stack = new Stack<>();
+        while (!this.players.isEmpty()) {
+            stack.add(this.players.remove());
+        }
+        while (!stack.isEmpty()) {
+            this.players.add(stack.peek());
+            stack.pop();
+        }
 
     }
 
     private void chooseColor(UnoCard card) {
+        this.playedCards.add(card);
 
+        //farbe darf gewählt werden selber spielt ist dran
+        this.chooseColor = true;
+
+        //spieler werden nicht rotiert
     }
 
     private void skipPlayer(UnoCard card) {
+        this.playedCards.add(card);
+        setPlayableForPlayers(card);
 
+        //rotate and skip next in line
+        rotatePlayers();
+        rotatePlayers();
     }
 
     private void playNormalCard(UnoCard card) {
+        //wenn karten gezogen werden müssen
+        if(this.cardsToDrawCounter > 0) {
+            drawCards(this.players.peek());
+        }
 
+        this.playedCards.add(card);
+        setPlayableForPlayers(card);
+        rotatePlayers();
+    }
+
+    private void setPlayableForPlayers(ICard card) {
+        this.players.forEach(player -> player.getDeck().setPlayable(card));
     }
 
     private void rotatePlayers() {
-
+        Player temp = this.players.remove();
+        this.players.add(temp);
     }
 
-    private void drawCards(Player player, int numOfCards) {
+    private void drawCards(Player player) {
         //stapel erweitern wenn nicht genügend Karten zum ziehen vorhanden sind
-        while(this.cards.size() < numOfCards) {
+        while(this.cards.size() < this.cardsToDrawCounter) {
             addCardsToStack();
         }
 
         //karten bei user hinzufügen
-        for(int i = numOfCards; i > 0; i--) {
+        for(int i = cardsToDrawCounter; i > 0; i--) {
             player.addCard(this.cards.remove(0));
         }
+
+        this.cardsToDrawCounter = 0;
     }
 
     private void addCardsToStack() {

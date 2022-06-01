@@ -35,20 +35,12 @@ public class SchafkopfCard implements ICard {
         return suit;
     }
 
-    @Override
-    public void setSuit(ISuit suit) {
-        this.suit = (SchafkopfSuit) suit;
-    }
 
     @Override
     public IRank getRank() {
         return rank;
     }
 
-    @Override
-    public void setRank(IRank rank) {
-        this.rank = (SchafkopfRank) rank;
-    }
 
     @Override
     public String toString() {

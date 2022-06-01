@@ -8,9 +8,7 @@ package main.java.com.company.template.cards;
  */
 public interface ICard {
     ISuit getSuit();
-    void setSuit(ISuit suit);
     IRank getRank();
-    void setRank(IRank rank);
     void setPlayable(boolean playable);
     boolean isPlayable();
     String toString();
