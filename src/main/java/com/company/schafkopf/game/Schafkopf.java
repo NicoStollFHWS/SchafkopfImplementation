@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 //TODO set player am zug
 //TODO neue runde starten
+//TODO stats erstellen
 public class Schafkopf extends Game {
     private static final int NUM_PLAYERS = 4;
 
@@ -55,7 +56,7 @@ public class Schafkopf extends Game {
         deck.shuffleDeck();
 
         //Karten verteilen
-        List<SchafkopfCard> schafkopfCards = (List<SchafkopfCard>) deck.getDeck();
+        List<ICard> schafkopfCards = deck.getDeck();
         while (schafkopfCards.size() != 0) {
             for (Player p : this.players) {
                 ICard card = schafkopfCards.remove(0);
@@ -101,9 +102,7 @@ public class Schafkopf extends Game {
         this.playedCard = new SchafkopfDeck(new ArrayList<>());
 
         //alle Karten auf playable setzen
-        this.players.forEach(p -> {
-            p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true));
-        });
+        this.players.forEach(p -> p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true)));
 
         //Karten sortieren
         this.players.forEach(p -> p.getDeck().sortDeck());
@@ -167,7 +166,7 @@ public class Schafkopf extends Game {
         }
 
 
-        //höchsten trick ermitteln
+        //höchsten trick ermitteln; nur das höchste angesagte Spiel wird gespielt
         int max = this.currentRound.stream()
                 .max((o1, o2) -> Math.max(o1.getStatesTrick(), o2.getStatesTrick()))
                 .get()
@@ -297,7 +296,7 @@ public class Schafkopf extends Game {
         this.playedCard.sortDeck();
 
         //höchste Karte finden
-        SchafkopfCard max = ((List<SchafkopfCard>) this.playedCard.getDeck()).get(0);
+        ICard max = this.playedCard.getDeck().get(0);
 
         //spieler finden der die höchste Karte gelegt hat
         Player temp = this.players.stream()

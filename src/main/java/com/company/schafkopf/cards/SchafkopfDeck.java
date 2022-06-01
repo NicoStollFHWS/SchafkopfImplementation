@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class SchafkopfDeck implements IDeck {
 
-    private final List<SchafkopfCard> deck;
+    private final List<ICard> deck;
     private SchafkopfCard firstPlayedSchafkopfCard = null;
     private ISuit trump = SchafkopfSuit.HERZ;
     private GameType type = GameType.NORMAL;
@@ -37,7 +37,7 @@ public class SchafkopfDeck implements IDeck {
         }
     }
 
-    public SchafkopfDeck(List<SchafkopfCard> wizardCards) {
+    public SchafkopfDeck(List<ICard> wizardCards) {
         this.deck = wizardCards;
     }
 
@@ -51,7 +51,7 @@ public class SchafkopfDeck implements IDeck {
         return this.deck.remove((SchafkopfCard) schafkopfCard);
     }
 
-    public List<? extends ICard> getDeck() {
+    public List<ICard> getDeck() {
         return this.deck;
     }
 
@@ -187,11 +187,11 @@ public class SchafkopfDeck implements IDeck {
 
     @Override
     public void sortDeck() {
-        Comparator<SchafkopfCard> comp = getComparator(this.type);
+        Comparator<ICard> comp = getComparator(this.type);
         this.deck.sort(comp);
     }
 
-    private Comparator<SchafkopfCard> getComparator(GameType type) {
+    private Comparator<ICard> getComparator(GameType type) {
         if(GameType.NORMAL == type || GameType.RAMSCH == type) {
             return getComparatorNormalRamsch();
         } else if(GameType.SOLO == type) {
@@ -205,14 +205,14 @@ public class SchafkopfDeck implements IDeck {
         }
     }
 
-    private Comparator<SchafkopfCard> getComparatorSolo() {
+    private Comparator<ICard> getComparatorSolo() {
         return (o1, o2) -> {
             //TODO Comparator schreiben für Solo
             return 0;
         };
     }
 
-    private Comparator<SchafkopfCard> getComparatorNormalRamsch() {
+    private Comparator<ICard> getComparatorNormalRamsch() {
         return (o1, o2) -> {
             //dealing with queen
             if (o1.getRank() == SchafkopfRank.QUEEN || o2.getRank() == SchafkopfRank.QUEEN) {
@@ -251,7 +251,7 @@ public class SchafkopfDeck implements IDeck {
         };
     }
 
-    private Comparator<SchafkopfCard> getComparatorWenz() {
+    private Comparator<ICard> getComparatorWenz() {
         return (o1, o2) -> {
 
             //handling jack
@@ -277,7 +277,7 @@ public class SchafkopfDeck implements IDeck {
         };
     }
 
-    private Comparator<SchafkopfCard> getComparatorQueen() {
+    private Comparator<ICard> getComparatorQueen() {
         return (o1, o2) -> {
 
             //handling jack

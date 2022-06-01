@@ -21,7 +21,7 @@ public interface IDeck {
     void add(ICard card);
     boolean remove(ICard card);
 
-    List<? extends ICard> getDeck();
+    List<ICard> getDeck();
 
     String printCards();
 

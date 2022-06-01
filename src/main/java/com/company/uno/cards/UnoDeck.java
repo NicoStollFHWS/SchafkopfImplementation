@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 2022-05-31
  */
 public class UnoDeck implements IDeck {
-    private List<UnoCard> cards;
+    private List<ICard> cards;
 
     public UnoDeck() {
         this.cards = new ArrayList<>();
@@ -29,7 +29,7 @@ public class UnoDeck implements IDeck {
         }
     }
 
-    public UnoDeck(List<UnoCard> cards) {
+    public UnoDeck(List<ICard> cards) {
         this.cards = cards;
     }
 
@@ -82,7 +82,7 @@ public class UnoDeck implements IDeck {
     }
 
     @Override
-    public List<? extends ICard> getDeck() {
+    public List<ICard> getDeck() {
         return this.cards;
     }
 

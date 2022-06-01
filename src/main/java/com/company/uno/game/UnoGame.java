@@ -21,10 +21,11 @@ import java.util.*;
  */
 
 //TODO set player am zug
+//TODO stats erstellen
 public class UnoGame extends Game {
     private final Queue<Player> players;
     private List<ICard> cards;
-    private UnoDeck playedCards;
+    private IDeck playedCards;
     private int cardsToDrawCounter;
     private boolean chooseColor = false;
 
@@ -192,6 +193,7 @@ public class UnoGame extends Game {
         this.playedCards.add(card);
 
         //entferne Karte vom Spieler
+        assert this.players.peek() != null;
         this.players.peek().getDeck().remove(card);
 
         //cardsToDrawIncrement
