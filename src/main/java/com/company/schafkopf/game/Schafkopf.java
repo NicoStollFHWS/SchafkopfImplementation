@@ -30,6 +30,7 @@ public class Schafkopf extends Game {
     private GameType gameType = GameType.NORMAL;
     private List<Player> team1;
     private List<Player> team2;
+    private Player lastWinner;
 
     public Schafkopf(Queue<Player> players) {
         super();
@@ -82,15 +83,16 @@ public class Schafkopf extends Game {
         //runde um eins erhöhen
         this.stichCounter++;
 
-        //gameTypeSetzen für das Spiel
-        setGameType();
-
         //queue für runde erstellen
         this.currentRound = new ArrayDeque<>(this.players);
 
-        //queue der spieler um eins rotieren
-        Player temp = this.players.remove();
-        this.players.add(temp);
+        //queue der spieler auf gewinner der letzten runde setzen
+        if(this.lastWinner != null) {
+            while(this.currentRound.peek() != this.lastWinner) {
+                Player temp = this.currentRound.remove();
+                this.currentRound.add(temp);
+            }
+        }
 
         //playedCard bei allen auf null setzen
         this.currentRound.forEach(player -> player.setPlayedCard(null));
@@ -102,9 +104,6 @@ public class Schafkopf extends Game {
         this.players.forEach(p -> {
             p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true));
         });
-
-        //teams setzen
-        setTeams();
 
         //Karten sortieren
         this.players.forEach(p -> p.getDeck().sortDeck());
@@ -162,7 +161,7 @@ public class Schafkopf extends Game {
         }
 
         //Prüfen ob die Spielwahl gültig ist
-        if (trick >= 0 && trick < GameType.values().length) {
+        if (trick < 0 || trick >= GameType.values().length) {
             System.err.println("Ungültige Auswahl.");
             return;
         }
@@ -188,7 +187,7 @@ public class Schafkopf extends Game {
         assert this.currentRound.peek() != null;
         if (this.currentRound.peek().getStatesTrick() != -1) {
 
-            initializeStich();
+            setGameType();
         }
 
 
@@ -204,6 +203,12 @@ public class Schafkopf extends Game {
         //in allen Decks das Spiel entsprechend einstellen
         this.playedCard.setType(this.gameType);
         this.currentRound.forEach(p -> p.getDeck().setType(this.gameType));
+
+        //1. stich initialisieren
+        initializeStich();
+
+        //teams setzen
+        setTeams();
     }
 
     @Override
@@ -299,6 +304,13 @@ public class Schafkopf extends Game {
                 .filter(player -> player.getPlayedCard().equals(max))
                 .collect(Collectors.toList())
                 .get(0);
+
+        //gewinner setzen als lastWinner
+        this.lastWinner = temp;
+
+        //Ausgabe des Gewinners und des Stiches
+        System.err.println(temp);
+        System.err.println(this.playedCard.getDeck());
 
         //Punkte berechnen die in diesem Stich liegen
         int points = this.playedCard.getDeck().stream()

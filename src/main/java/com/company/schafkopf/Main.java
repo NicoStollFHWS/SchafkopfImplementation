@@ -35,7 +35,7 @@ public class Main {
             System.out.println("1 - Spiel wählen \n2- Karte legen");
             int in = sc.nextInt();
             if(in == 1) {
-                System.out.println("0 - NORMAL\n1 - RAMSCH\n2 - SOLO\n4 - WENZ\n5 - GEIER");
+                System.out.println("0 - NORMAL\n1 - RAMSCH\n2 - SOLO\n3 - WENZ\n4 - GEIER");
                 int auswahl = sc.nextInt();
                 schafkopf.setTrick(temp, auswahl);
             } else if(in == 2) {

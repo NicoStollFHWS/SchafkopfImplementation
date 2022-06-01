@@ -10,10 +10,7 @@ import main.java.com.company.uno.cards.UnoDeck;
 import main.java.com.company.uno.cards.UnoRank;
 import main.java.com.company.uno.cards.UnoSuit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * UnoGame
@@ -35,7 +32,7 @@ public class UnoGame extends Game {
     public UnoGame(Queue<Player> players) {
         super();
         if(players.size() >= 2) {
-            this.players = players;
+            this.players = new ArrayDeque<>(players);
             initializeGame();
         } else {
             throw new UnsupportedOperationException("Zu wenige Spieler für Uno");
@@ -174,6 +171,7 @@ public class UnoGame extends Game {
         this.setCountdownCurrentUser();
         System.err.println("Karte gespielt: " + card);
 
+
     }
 
     private void playPlusFour(UnoCard card) {
@@ -192,6 +190,9 @@ public class UnoGame extends Game {
 
     private void playPlusTwo(UnoCard card) {
         this.playedCards.add(card);
+
+        //entferne Karte vom Spieler
+        this.players.peek().getDeck().remove(card);
 
         //cardsToDrawIncrement
         this.cardsToDrawCounter += card.getRank().getValue();
@@ -213,6 +214,9 @@ public class UnoGame extends Game {
     private void playReverse(UnoCard card) {
         this.playedCards.add(card);
 
+        //entferne Karte vom Spieler
+        this.players.peek().getDeck().remove(card);
+
         //reverse queue
         Stack<Player> stack = new Stack<>();
         while (!this.players.isEmpty()) {
@@ -228,6 +232,9 @@ public class UnoGame extends Game {
     private void chooseColor(UnoCard card) {
         this.playedCards.add(card);
 
+        //entferne Karte vom Spieler
+        this.players.peek().getDeck().remove(card);
+
         //farbe darf gewählt werden selber spielt ist dran
         this.chooseColor = true;
 
@@ -237,6 +244,9 @@ public class UnoGame extends Game {
     private void skipPlayer(UnoCard card) {
         this.playedCards.add(card);
         setPlayableForPlayers(card);
+
+        //entferne Karte vom Spieler
+        this.players.peek().getDeck().remove(card);
 
         //rotate and skip next in line
         rotatePlayers();
@@ -250,6 +260,10 @@ public class UnoGame extends Game {
         }
 
         this.playedCards.add(card);
+
+        //entferne Karte vom Spieler
+        this.players.peek().getDeck().remove(card);
+
         setPlayableForPlayers(card);
         rotatePlayers();
     }
