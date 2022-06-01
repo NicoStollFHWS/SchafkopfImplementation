@@ -19,11 +19,11 @@ import java.util.Stack;
  * UnoGame
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 
 //TODO set player am zug
-//TODO karten ziehen wenn keine Karte spielbar ist
 public class UnoGame extends Game {
     private final Queue<Player> players;
     private List<ICard> cards;
@@ -34,8 +34,12 @@ public class UnoGame extends Game {
 
     public UnoGame(Queue<Player> players) {
         super();
-        this.players = players;
-        initializeGame();
+        if(players.size() >= 2) {
+            this.players = players;
+            initializeGame();
+        } else {
+            throw new UnsupportedOperationException("Zu wenige Spieler für Uno");
+        }
     }
 
     private void initializeGame() {
@@ -75,6 +79,10 @@ public class UnoGame extends Game {
 
         //zu ziehende Karten auf 0 stellen
         this.cardsToDrawCounter = 0;
+
+        //prüfen ob Spieler 1 eine Karte spielen kann
+        assert this.players.peek() != null;
+        drawSingleCard(this.players.peek());
 
     }
 
@@ -163,6 +171,7 @@ public class UnoGame extends Game {
         else if (unoCard.getRank().equals(UnoRank.SKIP)) skipPlayer(unoCard);
         else playNormalCard(unoCard);
 
+        this.setCountdownCurrentUser();
         System.err.println("Karte gespielt: " + card);
 
     }

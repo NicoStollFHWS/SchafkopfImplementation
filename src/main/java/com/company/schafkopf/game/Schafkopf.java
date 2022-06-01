@@ -14,10 +14,12 @@ import java.util.stream.Collectors;
  * Schafkopf
  *
  * @author Vladimir Bauer
+ * @author Nicolas Stoll
  * @since 2022-05-31
  */
 
 //TODO set player am zug
+//TODO neue runde starten
 public class Schafkopf extends Game {
     private static final int NUM_PLAYERS = 4;
 
@@ -251,6 +253,9 @@ public class Schafkopf extends Game {
             this.playedCard.setFirstPlayedCard((SchafkopfCard) card);
             this.players.forEach(p -> p.getDeck().setPlayable((SchafkopfCard) card));
         }
+
+        //countdown für neuen spieler setzen
+        this.setCountdownCurrentUser();
 
         //auswertung wenn jeder spieler eine Karte gelegt hat
         if (this.currentRound.isEmpty()) {
