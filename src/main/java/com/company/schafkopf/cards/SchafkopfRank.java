@@ -9,7 +9,7 @@ import main.java.com.company.template.cards.IRank;
  * @since 2022-05-31
  */
 public enum SchafkopfRank implements IRank {
-    SEVEN(0), EIGTH(0), NINE(0), TEN(10), JACK(2), QUEEN(3), KING(4), ACE(11);
+    SEVEN(0), EIGTH(0), NINE(0), KING(4), TEN(10), ACE(11), JACK(2), QUEEN(3);
 
     private final int value;
 
@@ -19,5 +19,14 @@ public enum SchafkopfRank implements IRank {
 
     public int getValue() {
         return this.value;
+    }
+
+    @Override
+    public int compareTo(IRank rank) {
+        if(this.getClass().equals(rank.getClass()) == false) {
+            throw new UnsupportedOperationException("Verschiedene Ranks können nicht verglichen werden");
+        }
+
+        return this.ordinal() - rank.ordinal();
     }
 }

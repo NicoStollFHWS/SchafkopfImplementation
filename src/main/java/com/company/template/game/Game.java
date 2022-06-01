@@ -38,8 +38,8 @@ public abstract class Game {
         return countdownCurrentUser;
     }
 
-    public void setCountdownCurrentUser(long countdownCurrentUser) {
-        this.countdownCurrentUser = countdownCurrentUser;
+    public void setCountdownCurrentUser() {
+        this.countdownCurrentUser = System.currentTimeMillis();
     }
 
     public String getStats() {

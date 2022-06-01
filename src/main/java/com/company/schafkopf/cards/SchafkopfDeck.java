@@ -94,14 +94,14 @@ public class SchafkopfDeck implements IDeck {
             case NORMAL: case RAMSCH: case SOLO:
                 setPlayableNormalRamschSolo(numCardWithSameSuitAsFirstPlayer, firstPlayed);
                 break;
-            case RUF:
-                setPlayableRuf(numCardWithSameSuitAsFirstPlayer, firstPlayed);
             case WENZ:
                 setPlayableWenz(numCardWithSameSuitAsFirstPlayer, firstPlayed);
                 break;
             case GEIER:
                 setPlayableGeier(numCardWithSameSuitAsFirstPlayer, firstPlayed);
                 break;
+            default:
+                setPlayableNormalRamschSolo(numCardWithSameSuitAsFirstPlayer, firstPlayed);
 
         }
     }
@@ -128,19 +128,6 @@ public class SchafkopfDeck implements IDeck {
                 c.setPlayable(true);
             }
         });
-    }
-
-    private void setPlayableRuf(long numCardsWithSameSuitAsFirstPlayer, SchafkopfCard firstPlayed) {
-
-        boolean containsAceOfRuf = this.deck.stream()
-                .filter(wizardCard -> wizardCard.getSuit() == firstPlayed.getSuit() && wizardCard.getRank() == SchafkopfRank.ACE)
-                .count() == 1;
-
-        if(containsAceOfRuf) {
-            this.deck.forEach(c -> c.setPlayable(c.getSuit() == firstPlayed.getSuit() && c.getRank() == SchafkopfRank.ACE));
-        } else {
-            setPlayableNormalRamschSolo(numCardsWithSameSuitAsFirstPlayer, firstPlayed);
-        }
     }
 
     private void setPlayableWenz(long numCardWithSameSuitAsFirstPlayer, SchafkopfCard firstPlayed) {
@@ -204,50 +191,49 @@ public class SchafkopfDeck implements IDeck {
     }
 
     private Comparator<SchafkopfCard> getComparator(GameType type) {
-        if(GameType.NORMAL == type || GameType.RAMSCH == type || GameType.RUF == type) {
-            return getComparatorNormalRamschRuf();
+        if(GameType.NORMAL == type || GameType.RAMSCH == type) {
+            return getComparatorNormalRamsch();
         } else if(GameType.SOLO == type) {
-            //TODO für solo den comparator festlegen --> man braucht von player was der trumpf sein soll
-            return new Comparator<>() {
-                @Override
-                public int compare(SchafkopfCard o1, SchafkopfCard o2) {
-                    return 0;
-                }
-            };
+            return getComparatorSolo();
         } else if(GameType.WENZ == type) {
             return getComparatorWenz();
-        } else {
+        } else if (GameType.GEIER == type){
             return getComparatorQueen();
+        } else {
+            return getComparatorNormalRamsch();
         }
     }
 
-    private Comparator<SchafkopfCard> getComparatorNormalRamschRuf() {
+    private Comparator<SchafkopfCard> getComparatorSolo() {
+        return (o1, o2) -> {
+            //TODO Comparator schreiben für Solo
+            return 0;
+        };
+    }
+
+    private Comparator<SchafkopfCard> getComparatorNormalRamsch() {
         return (o1, o2) -> {
             //dealing with queen
-            if (o1.rank == SchafkopfRank.QUEEN || o2.rank == SchafkopfRank.QUEEN) {
-                if (o1.rank == SchafkopfRank.QUEEN && o2.rank == SchafkopfRank.QUEEN) {
+            if (o1.getRank() == SchafkopfRank.QUEEN || o2.getRank() == SchafkopfRank.QUEEN) {
+                if (o1.getRank() == SchafkopfRank.QUEEN && o2.getRank() == SchafkopfRank.QUEEN) {
                     return o1.compareTo(o2);
-                } else if (o1.rank == SchafkopfRank.QUEEN) {
+                } else if (o1.getRank() == SchafkopfRank.QUEEN) {
                     return 1;
                 }
                 return -1;
                 //handling jack
-            } else if (o1.rank == SchafkopfRank.JACK || o2.rank == SchafkopfRank.JACK) {
-                if (o1.rank == SchafkopfRank.JACK && o2.rank == SchafkopfRank.JACK) {
+            } else if (o1.getRank() == SchafkopfRank.JACK || o2.getRank() == SchafkopfRank.JACK) {
+                if (o1.getRank() == SchafkopfRank.JACK && o2.getRank() == SchafkopfRank.JACK) {
                     return o1.compareTo(o2);
-                } else if (o1.rank == SchafkopfRank.JACK) {
-                    return 1;
                 }
-                return -1;
+                return (o1.getRank() == SchafkopfRank.JACK) ? 1: -1;
 
                 //handling trump
-            } else if (o1.suit == trump || o2.suit == trump) {
-                if (o1.suit == trump && o2.suit == trump) {
-                    return o1.rank.compareTo(o2.rank);
-                } else if (o1.suit == trump) {
-                    return 1;
+            } else if (o1.getSuit() == trump || o2.getSuit() == trump) {
+                if (o1.getSuit() == trump && o2.getSuit() == trump) {
+                    return o1.getRank().compareTo(o2.getRank());
                 }
-                return -1;
+                return (o1.suit == trump)  ?  1 : -1;
             }
 
             //card is played SchafkopfSuit
@@ -255,14 +241,12 @@ public class SchafkopfDeck implements IDeck {
                 if (o1.suit == firstPlayedSchafkopfCard.suit || o2.suit == firstPlayedSchafkopfCard.suit) {
                     if (o1.suit == firstPlayedSchafkopfCard.suit && o2.suit == firstPlayedSchafkopfCard.suit) {
                         return o1.rank.compareTo(o2.rank);
-                    } else if (o1.suit == firstPlayedSchafkopfCard.suit) {
-                        return 1;
                     }
-                    return -1;
+                    return  (o1.suit == firstPlayedSchafkopfCard.suit) ? 1 : -1;
                 }
             }
             //doesn't matter both wizardCards are worth nothing
-            return 0;
+            return o1.compareTo(o2);
         };
     }
 
@@ -273,10 +257,8 @@ public class SchafkopfDeck implements IDeck {
             if (o1.rank == SchafkopfRank.JACK || o2.rank == SchafkopfRank.JACK) {
                 if (o1.rank == SchafkopfRank.JACK && o2.rank == SchafkopfRank.JACK) {
                     return o1.compareTo(o2);
-                } else if (o1.rank == SchafkopfRank.JACK) {
-                    return 1;
                 }
-                return -1;
+                return (o1.rank == SchafkopfRank.JACK) ? 1 : -1;
             }
 
             //card is played SchafkopfSuit
@@ -284,10 +266,9 @@ public class SchafkopfDeck implements IDeck {
                 if (o1.suit == firstPlayedSchafkopfCard.suit || o2.suit == firstPlayedSchafkopfCard.suit) {
                     if (o1.suit == firstPlayedSchafkopfCard.suit && o2.suit == firstPlayedSchafkopfCard.suit) {
                         return o1.rank.compareTo(o2.rank);
-                    } else if (o1.suit == firstPlayedSchafkopfCard.suit) {
-                        return 1;
                     }
-                    return -1;
+                    return (o1.suit == firstPlayedSchafkopfCard.suit) ? 1 : -1;
+
                 }
             }
             //doesn't matter both wizardCards are worth nothing
@@ -302,10 +283,8 @@ public class SchafkopfDeck implements IDeck {
             if (o1.rank == SchafkopfRank.QUEEN || o2.rank == SchafkopfRank.QUEEN) {
                 if (o1.rank == SchafkopfRank.QUEEN && o2.rank == SchafkopfRank.QUEEN) {
                     return o1.suit.compareTo(o2.suit);
-                } else if (o1.rank == SchafkopfRank.QUEEN) {
-                    return 1;
                 }
-                return -1;
+                return (o1.rank == SchafkopfRank.QUEEN) ? 1 : -1;
             }
 
             //card is played SchafkopfSuit
@@ -313,10 +292,8 @@ public class SchafkopfDeck implements IDeck {
                 if (o1.suit == firstPlayedSchafkopfCard.suit || o2.suit == firstPlayedSchafkopfCard.suit) {
                     if (o1.suit == firstPlayedSchafkopfCard.suit && o2.suit == firstPlayedSchafkopfCard.suit) {
                         return o1.rank.compareTo(o2.rank);
-                    } else if (o1.suit == firstPlayedSchafkopfCard.suit) {
-                        return 1;
                     }
-                    return -1;
+                    return (o1.suit == firstPlayedSchafkopfCard.suit) ? 1 : -1;
                 }
             }
             //doesn't matter both wizardCards are worth nothing

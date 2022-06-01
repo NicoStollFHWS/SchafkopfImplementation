@@ -53,6 +53,9 @@ public class SchafkopfCard implements ICard {
 
     @Override
     public int compareTo(ICard cw) {
-        return this.suit.compareTo(((SchafkopfCard) cw).suit);
+        if(this.suit.compareTo(cw.getSuit()) == 0) {
+            return this.getRank().compareTo(cw.getRank());
+        }
+        return this.suit.compareTo(cw.getSuit());
     }
 }

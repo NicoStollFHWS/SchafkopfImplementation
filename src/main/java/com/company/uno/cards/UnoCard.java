@@ -39,11 +39,20 @@ public class UnoCard implements ICard {
 
     @Override
     public boolean isPlayable() {
-        return this.isPlayable();
+        return this.playable;
     }
 
     @Override
     public int compareTo(ICard cw) {
-        throw new UnsupportedOperationException("Wird nicht benötigt für Uno");
+       return this.getRank().compareTo(cw.getRank());
+    }
+
+    @Override
+    public String toString() {
+        return "UnoCard{" +
+                "suit=" + suit +
+                ", rank=" + rank +
+                ", playable=" + playable +
+                '}' + "\n";
     }
 }

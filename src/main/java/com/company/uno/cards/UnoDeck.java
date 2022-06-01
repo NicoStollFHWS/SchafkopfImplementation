@@ -45,29 +45,28 @@ public class UnoDeck implements IDeck {
 
     @Override
     public void sortDeck() {
-        Collections.sort(this.cards, new Comparator<UnoCard>() {
-            @Override
-            public int compare(UnoCard o1, UnoCard o2) {
-                UnoRank rankCard1 = (UnoRank) o1.getRank();
-                UnoSuit suitCard1 = (UnoSuit) o1.getSuit();
+        Collections.sort(this.cards, (o1, o2) -> {
 
-                UnoRank rankCard2 = (UnoRank) o2.getRank();
-                UnoSuit suitCard2 = (UnoSuit) o2.getSuit();
-
-                //nimm vier ist die höchste Kate
-                if(rankCard1.equals(UnoRank.TAKE_FOUR) || rankCard2.equals(UnoRank.TAKE_FOUR)) {
-                    if(rankCard1.equals(UnoRank.TAKE_FOUR) && rankCard2.equals(UnoRank.TAKE_FOUR)) {
-                        return 0;
-                    }
-                    return rankCard1.equals(UnoRank.TAKE_FOUR) ?  1 : -1;
+            //nimm vier ist die höchste Kate
+            if(o1.getRank().equals(UnoRank.TAKE_FOUR) || o2.getRank().equals(UnoRank.TAKE_FOUR)) {
+                if(o1.getRank().equals(UnoRank.TAKE_FOUR) && o2.getRank().equals(UnoRank.TAKE_FOUR)) {
+                    return 0;
                 }
+                return o1.getRank().equals(UnoRank.TAKE_FOUR) ?  1 : -1;
+            }
 
-                //sortieren zuerst nach Farbe und dann nach zahlenwert
-                if(suitCard1.equals(suitCard2)) {
-                    return rankCard1.ordinal() - rankCard2.ordinal();
-                } else {
-                    return suitCard1.ordinal() - suitCard2.ordinal();
+            if(o1.getRank().equals(UnoRank.CHOOSE_COLOR) || o2.getRank().equals(UnoRank.CHOOSE_COLOR)) {
+                if(o1.getRank().equals(UnoRank.CHOOSE_COLOR) && o2.getRank().equals(UnoRank.CHOOSE_COLOR)) {
+                    return 0;
                 }
+                return o1.getRank().equals(UnoRank.CHOOSE_COLOR) ? 1 : -1;
+            }
+
+            //sortieren zuerst nach Farbe und dann nach zahlenwert
+            if(o1.getSuit().equals(o2.getSuit())) {
+                return o1.getRank().ordinal() - o2.getRank().ordinal();
+            } else {
+                return o1.getSuit().ordinal() - o2.getSuit().ordinal();
             }
         });
     }
@@ -96,8 +95,6 @@ public class UnoDeck implements IDeck {
 
     @Override
     public void setPlayable(ICard playedCard) {
-        UnoRank rankPlayedCard = (UnoRank) playedCard.getRank();
-        UnoSuit suitPlayedCard = (UnoSuit) playedCard.getSuit();
         this.cards.forEach(c -> {
             UnoRank rankCard = (UnoRank) c.getRank();
             UnoSuit suitCard = (UnoSuit) c.getSuit();
@@ -106,11 +103,11 @@ public class UnoDeck implements IDeck {
                 c.setPlayable(true);
 
                 //gleiche farbe darf auf einander gelegt werden
-            } else if(suitPlayedCard.equals(suitCard)) {
+            } else if(playedCard.getSuit().equals(suitCard)) {
                 c.setPlayable(true);
 
                 //gleiche zahl darf aufeinander gelegt werden
-            } else if(rankCard.equals(rankPlayedCard)) {
+            } else if(rankCard.equals(playedCard.getRank())) {
                 c.setPlayable(true);
 
             } else {

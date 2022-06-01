@@ -16,7 +16,11 @@ import java.util.stream.Collectors;
  * @author Vladimir Bauer
  * @since 2022-05-31
  */
+
+//TODO set player am zug
 public class Schafkopf extends Game {
+    private static final int NUM_PLAYERS = 4;
+
     private final Queue<Player> players;
     private int stichCounter = 0;
     private Queue<Player> currentRound;
@@ -27,7 +31,7 @@ public class Schafkopf extends Game {
 
     public Schafkopf(Queue<Player> players) {
         super();
-        if(players.size() == 4) {
+        if (players.size() == NUM_PLAYERS) {
             this.players = new ArrayDeque<>(players);
             initializeRound();
         } else {
@@ -49,8 +53,8 @@ public class Schafkopf extends Game {
 
         //Karten verteilen
         List<SchafkopfCard> schafkopfCards = (List<SchafkopfCard>) deck.getDeck();
-        while(schafkopfCards.size() != 0) {
-            for(Player p : this.players) {
+        while (schafkopfCards.size() != 0) {
+            for (Player p : this.players) {
                 ICard card = schafkopfCards.remove(0);
                 p.addCard(card);
             }
@@ -120,20 +124,22 @@ public class Schafkopf extends Game {
                 team2.add(temp.get(3));
             }
             default -> {
-                //hier 1 vs 3 bzw. bei Ruf weiß man nicht wer der 3. Spieler ist
-                Player tempPlayer = temp.stream().filter(p -> p.getStatesTrick() == gameType.ordinal())
+                //spieler finden, der spiel vorgegeben hat
+                //ordinal = gametype.ordinal()
+                Player tempPlayer = temp.stream()
+                        .filter(p -> p.getStatesTrick() == gameType.ordinal())
                         .collect(Collectors.toList())
                         .get(0);
 
                 team1.add(tempPlayer);
+
+                //alle anderen Spieler ins andere team
                 for (Player p : temp) {
                     if (p != tempPlayer) {
                         team2.add(p);
                     }
                 }
             }
-
-            //TODO wenn das ruf-Ass gespielt wurde muss der spieler das team wechseln
         }
     }
 
@@ -141,42 +147,49 @@ public class Schafkopf extends Game {
     @Override
     public void setTrick(Player player, int trick) {
 
-        if(player.equals(currentRound.peek())) {
-            if(currentRound.peek().getStatesTrick() == -1) {
-                if(trick >= 0 && trick < GameType.values().length) {
-
-                    //höchsten trick ermitteln
-                    int max = this.currentRound.stream()
-                            .max((o1, o2) -> Math.max(o1.getStatesTrick(), o2.getStatesTrick()))
-                            .get()
-                            .getStatesTrick();
-
-                    //Setzen des gewünschten Spiels beim Player und anfügen ans Ende
-                    Player temp = this.currentRound.remove();
-
-                    //wenn vorherige überboten wurden setzen sonst 0 (normales Spiel)
-                    temp.setStatesTrick(trick > max ? trick : 0);
-
-                    this.currentRound.add(temp);
-
-                    System.out.println("Player hat folgendes Spiel gewählt: " + GameType.values()[trick]);
-
-                    //checken ob alle Spieler ein Spiel gewählt haben
-                    assert this.currentRound.peek() != null;
-                    if (this.currentRound.peek().getStatesTrick() != -1) {
-
-                        initializeStich();
-                    }
-
-                } else {
-                    System.err.println("Ungültige Auswahl.");
-                }
-            } else {
-                System.err.println("Spiel wurde bereits gewählt");
-            }
-        } else {
+        //prüfen ob Spieler an der Reihe ist
+        if (player.equals(currentRound.peek()) == false) {
             System.err.println("Spieler ist nicht am Zug");
+            return;
         }
+
+        //Prüfen ob Spieler sein Spiel gewählt hat
+        if (currentRound.peek().getStatesTrick() != -1) {
+            System.err.println("Spiel wurde bereits gewählt");
+            return;
+        }
+
+        //Prüfen ob die Spielwahl gültig ist
+        if (trick >= 0 && trick < GameType.values().length) {
+            System.err.println("Ungültige Auswahl.");
+            return;
+        }
+
+
+        //höchsten trick ermitteln
+        int max = this.currentRound.stream()
+                .max((o1, o2) -> Math.max(o1.getStatesTrick(), o2.getStatesTrick()))
+                .get()
+                .getStatesTrick();
+
+        //Setzen des gewünschten Spiels beim Player und anfügen ans Ende
+        Player temp = this.currentRound.remove();
+
+        //wenn vorherige überboten wurden setzen sonst 0 (normales Spiel)
+        temp.setStatesTrick(trick > max ? trick : 0);
+
+        this.currentRound.add(temp);
+
+        System.out.println("Player hat folgendes Spiel gewählt: " + GameType.values()[trick]);
+
+        //checken ob alle Spieler ein Spiel gewählt haben
+        assert this.currentRound.peek() != null;
+        if (this.currentRound.peek().getStatesTrick() != -1) {
+
+            initializeStich();
+        }
+
+
     }
 
     private void setGameType() {
@@ -195,47 +208,55 @@ public class Schafkopf extends Game {
     public void playCard(Player player, ICard card) {
         Player temp = this.currentRound.peek();
         assert temp != null;
-        //TODO schauen ob karte spielbar ist
-        if(temp.equals(player)) {
-            if(temp.getStatesTrick() != -1) {
-                if(temp.getDeck().getDeck().contains((SchafkopfCard) card)) {
-                    if(card.isPlayable()) {
 
-                        System.err.println((SchafkopfCard) card);
-
-                        //spieler vom Beginn der Schlange entfernen
-                        this.currentRound.remove();
-
-                        //Karte aus der Hand des Spielers entfernen
-                        temp.getDeck().remove(card);
-
-                        //Karte ausspielen auf Tisch
-                        this.playedCard.add((SchafkopfCard) card);
-                        player.setPlayedCard(card);
-
-                        //wenn erste Karte gespielt wurde muss für alle Karten angezeigt werden, ob sie spielbar sind
-                        if (this.playedCard.getDeck().size() == 1) {
-                            System.out.println("Playable setzen für Spieler");
-                            this.playedCard.setFirstPlayedCard((SchafkopfCard) card);
-                            this.players.forEach(p -> p.getDeck().setPlayable((SchafkopfCard) card));
-                        }
-
-                        //auswertung wenn jeder spieler eine Karte gelegt hat
-                        if (this.currentRound.isEmpty()) {
-                            assesStich();
-                        }
-                    } else {
-                        System.err.println("Karte kann nicht gespielt werden");
-                    }
-                } else {
-                    System.err.println("Ungültige Karte gespielt; ist nicht auf der Hand");
-                }
-            } else {
-                System.err.println("Spieler hat noch kein Spiel ausgewählt");
-            }
-        } else {
+        //checken ob Spieler an der Reihe ist
+        if (temp.equals(player) == false) {
             System.err.println("Spieler ist nicht am Zug, er kann keine Karte legen");
+            return;
         }
+
+        //checken ob Spiel gewählt wurde
+        if (temp.getStatesTrick() == -1) {
+            System.err.println("Spieler hat noch kein Spiel ausgewählt");
+            return;
+        }
+
+        //checken ob Karte gültig ist
+        if (temp.getDeck().getDeck().contains((SchafkopfCard) card) == false) {
+            System.err.println("Ungültige Karte gespielt; ist nicht auf der Hand");
+            return;
+        }
+
+        //checken ob Karte spielbar ist
+        if (card.isPlayable() == false) {
+            System.err.println("Karte kann nicht gespielt werden");
+            return;
+        }
+
+        System.err.println(card);
+
+        //spieler vom Beginn der Schlange entfernen
+        this.currentRound.remove();
+
+        //Karte aus der Hand des Spielers entfernen
+        temp.getDeck().remove(card);
+
+        //Karte ausspielen auf Tisch
+        this.playedCard.add((SchafkopfCard) card);
+        player.setPlayedCard(card);
+
+        //wenn erste Karte gespielt wurde muss für alle Karten angezeigt werden, ob sie spielbar sind
+        if (this.playedCard.getDeck().size() == 1) {
+            System.out.println("Playable setzen für Spieler");
+            this.playedCard.setFirstPlayedCard((SchafkopfCard) card);
+            this.players.forEach(p -> p.getDeck().setPlayable((SchafkopfCard) card));
+        }
+
+        //auswertung wenn jeder spieler eine Karte gelegt hat
+        if (this.currentRound.isEmpty()) {
+            assesStich();
+        }
+
     }
 
     @Override
@@ -245,7 +266,7 @@ public class Schafkopf extends Game {
 
     @Override
     public List<ICard> getPlayedCards() {
-        return null;
+        return new ArrayList<>(this.playedCard.getDeck());
     }
 
 
@@ -282,7 +303,7 @@ public class Schafkopf extends Game {
         temp.addPoint(points);
 
         //checken ob es der letzte stich war
-        if(this.stichCounter == 8) {
+        if (this.stichCounter == 8) {
             //wenn ja endauswertung
             assessRound();
         } else {
@@ -298,7 +319,7 @@ public class Schafkopf extends Game {
         int pointsTeam2 = team2.stream().mapToInt(Player::getPoints).sum();
 
         //umgekehrt bei Ramsch
-        if(gameType == GameType.RAMSCH) {
+        if (gameType == GameType.RAMSCH) {
             if (pointsTeam1 < pointsTeam2) {
                 System.out.println("Team 1 hat gewonnen");
             } else {

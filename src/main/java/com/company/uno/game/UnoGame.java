@@ -21,6 +21,9 @@ import java.util.Stack;
  * @author Vladimir Bauer
  * @since 2022-05-31
  */
+
+//TODO set player am zug
+//TODO karten ziehen wenn keine Karte spielbar ist
 public class UnoGame extends Game {
     private final Queue<Player> players;
     private List<ICard> cards;
@@ -30,6 +33,7 @@ public class UnoGame extends Game {
 
 
     public UnoGame(Queue<Player> players) {
+        super();
         this.players = players;
         initializeGame();
     }
@@ -42,7 +46,7 @@ public class UnoGame extends Game {
         this.cards = (List<ICard>) deck.getDeck();
 
         //Kartenanzahl erhöhen, wenn zu wenig Karten für Spieler vorhanden sind
-        while(players.size() * 7 > this.cards.size()) {
+        while (players.size() * 7 > this.cards.size()) {
             addCardsToStack();
         }
 
@@ -50,20 +54,28 @@ public class UnoGame extends Game {
         this.players.forEach(player -> player.setDeck(new UnoDeck(new ArrayList<>())));
 
         //verteile Karten - jeder Spieler kriegt 7 Stück
-        for(int i = 0; i < 7; i ++) {
-            for(Player p : this.players) {
+        for (int i = 0; i < 7; i++) {
+            for (Player p : this.players) {
                 p.addCard(this.cards.remove(0));
             }
         }
 
-        //setze alle Karten auf spielbar
-        this.players.forEach(player -> player.getDeck().getDeck().forEach(card -> card.setPlayable(true)));
-
         //ablagestapel erstellen
         this.playedCards = new UnoDeck(new ArrayList<>());
 
+        //setze erste Karte für Ablagestapel
+        ICard first = this.cards.remove(0);
+        this.playedCards.add(first);
+
+        //setze Spielbarkeit bei allen Karten
+        this.players.forEach(player -> player.getDeck().setPlayable(first));
+
+        //deck sortieren
+        this.players.forEach(player -> player.getDeck().sortDeck());
+
         //zu ziehende Karten auf 0 stellen
         this.cardsToDrawCounter = 0;
+
     }
 
 
@@ -72,71 +84,87 @@ public class UnoGame extends Game {
      * Used here to choose a color after a CHOOSE_COLOR OR PLUS_FOUR has been played
      */
     public void setTrick(Player player, int trick) {
-        if(player.equals(this.players.peek())) {
-            if (chooseColor) {
-                //ungültige Eingabe
-                if (trick < 0 || trick >= UnoSuit.values().length) {
-                    return;
-                }
 
-                //setzen eines defaults
-                UnoSuit suit = UnoSuit.BLUE;
-
-                //finden der passenden Suit für eingabe
-                for (UnoSuit s : UnoSuit.values()) {
-                    if (s.ordinal() == trick) {
-                        suit = s;
-                        break;
-                    }
-                }
-
-                //setzten der Spielbarkeit bei allen Spielern
-                UnoSuit finalSuit = suit;
-                this.players.forEach(p -> p.getDeck().setPlayable(new UnoCard(finalSuit, UnoRank.CHOOSE_COLOR)));
-
-                //choose color wieder auf false setzen
-                this.chooseColor = false;
-
-                //rotate Players
-                rotatePlayers();
-
-            } else {
-                System.out.println("Es darf keine Farbe gewählt werden");
-            }
-        } else {
-            System.out.println("Spieler nicht am Zug - er darf keine Farbe wählen");
+        //prüfen ob Spieler am Zug ist
+        if (player.equals(this.players.peek()) == false) {
+            System.err.println("Spieler nicht am Zug - er darf keine Farbe wählen");
+            return;
         }
+
+        //prüfen ob Farbe gewählt werden darf
+        if (chooseColor == false) {
+            System.err.println("Es darf keine Farbe gewählt werden");
+            return;
+        }
+
+        //ungültige Eingabe
+        if (trick < 0 || trick >= UnoSuit.values().length) {
+            return;
+        }
+
+        //setzen eines defaults
+        UnoSuit suit = UnoSuit.BLUE;
+
+        //finden der passenden Suit für eingabe
+        for (UnoSuit s : UnoSuit.values()) {
+            if (s.ordinal() == trick) {
+                suit = s;
+                break;
+            }
+        }
+
+        //setzten der Spielbarkeit bei allen Spielern
+        UnoSuit finalSuit = suit;
+        this.players.forEach(p -> p.getDeck().setPlayable(new UnoCard(finalSuit, UnoRank.CHOOSE_COLOR)));
+
+        //choose color wieder auf false setzen
+        this.chooseColor = false;
+
+        //rotate Players
+        rotatePlayers();
+
     }
 
     @Override
     public void playCard(Player player, ICard card) {
-        if(this.chooseColor) {
+
+        //prüfen ob eine Farbe gewählt werden muss
+        if (this.chooseColor) {
             System.out.println("Es muss erste eine Farbe gewählt werden");
             return;
         }
         //checken ob Spieler am Zug ist
         assert this.players.peek() != null;
-        if(this.players.peek().equals(player)) {
-
-            //checken, ob Karte auf der Hand des Spielers ist
-            if(player.getDeck().getDeck().contains(card)) {
-
-                //checken ob Karte spielbar ist
-                if(card.isPlayable()) {
-                    UnoCard unoCard = (UnoCard) card;
-
-                    //TODO reagieren wenn Karten gezogen werden müssen und keine weitere plus2 reingegeben wird
-
-                    if(unoCard.getRank().equals(UnoRank.TAKE_FOUR)) playPlusFour(unoCard);
-                    else if(unoCard.getRank().equals(UnoRank.TAKE_TWO)) playPlusTwo(unoCard);
-                    else if(unoCard.getRank().equals(UnoRank.REVERSE)) playReverse(unoCard);
-                    else if(unoCard.getRank().equals(UnoRank.CHOOSE_COLOR)) chooseColor(unoCard);
-                    else if(unoCard.getRank().equals(UnoRank.SKIP)) skipPlayer(unoCard);
-                    else playNormalCard(unoCard);
-
-                }
-            }
+        if (this.players.peek().equals(player) == false) {
+            System.err.println("Spieler ist nicht am Zug");
+            return;
         }
+
+        //checken, ob Karte auf der Hand des Spielers ist
+        if (player.getDeck().getDeck().contains(card) == false) {
+            System.err.println("Karte befindet sich nicht auf der Hand des Spielers");
+            return;
+        }
+
+        //checken ob Karte spielbar ist
+        if (card.isPlayable() == false) {
+            System.err.println("Karte ist nicht spielbar");
+            return;
+        }
+
+        UnoCard unoCard = (UnoCard) card;
+
+        //TODO reagieren wenn Karten gezogen werden müssen und keine weitere plus2 reingegeben wird
+
+        if (unoCard.getRank().equals(UnoRank.TAKE_FOUR)) playPlusFour(unoCard);
+        else if (unoCard.getRank().equals(UnoRank.TAKE_TWO)) playPlusTwo(unoCard);
+        else if (unoCard.getRank().equals(UnoRank.REVERSE)) playReverse(unoCard);
+        else if (unoCard.getRank().equals(UnoRank.CHOOSE_COLOR)) chooseColor(unoCard);
+        else if (unoCard.getRank().equals(UnoRank.SKIP)) skipPlayer(unoCard);
+        else playNormalCard(unoCard);
+
+        System.err.println("Karte gespielt: " + card);
+
     }
 
     private void playPlusFour(UnoCard card) {
@@ -168,7 +196,7 @@ public class UnoGame extends Game {
                 .anyMatch(c -> c.getRank().equals(UnoRank.TAKE_TWO));
 
         //wenn er keine hat werden die karten direkt gezogen
-        if(nextPlayerHasPlusTwo == false) {
+        if (nextPlayerHasPlusTwo == false) {
             drawCards(this.players.peek());
         }
     }
@@ -208,7 +236,7 @@ public class UnoGame extends Game {
 
     private void playNormalCard(UnoCard card) {
         //wenn karten gezogen werden müssen
-        if(this.cardsToDrawCounter > 0) {
+        if (this.cardsToDrawCounter > 0) {
             drawCards(this.players.peek());
         }
 
@@ -224,16 +252,49 @@ public class UnoGame extends Game {
     private void rotatePlayers() {
         Player temp = this.players.remove();
         this.players.add(temp);
+
+        //prüfen ob erster Spieler eine Karte spielen kann
+        assert this.players.peek() != null;
+        drawSingleCard(this.players.peek());
+    }
+
+    private void drawSingleCard(Player player) {
+        ICard lastPlayed = this.playedCards.getDeck().get(this.playedCards.getDeck().size() -1);
+        long numOfPlayableCards = player.getDeck().getDeck()
+                .stream()
+                .filter(ICard::isPlayable)
+                .count();
+
+        while(numOfPlayableCards == 0) {
+            System.err.println("Es muss eine Karte nachgezogen werden");
+            //Karten zu Ziehstapel hinzufügen wenn Stapel leer
+            if(this.cards.size() < 1) {
+                addCardsToStack();
+            }
+
+            //Karte ziehen
+            player.addCard(this.cards.remove(0));
+
+            //isPlayable setzen
+            player.getDeck().setPlayable(lastPlayed);
+
+            //prüfen ob eine Karte spielbar ist
+            numOfPlayableCards = player.getDeck().getDeck()
+                    .stream()
+                    .filter(ICard::isPlayable)
+                    .count();
+
+        }
     }
 
     private void drawCards(Player player) {
         //stapel erweitern wenn nicht genügend Karten zum ziehen vorhanden sind
-        while(this.cards.size() < this.cardsToDrawCounter) {
+        while (this.cards.size() < this.cardsToDrawCounter) {
             addCardsToStack();
         }
 
         //karten bei user hinzufügen
-        for(int i = cardsToDrawCounter; i > 0; i--) {
+        for (int i = cardsToDrawCounter; i > 0; i--) {
             player.addCard(this.cards.remove(0));
         }
 
@@ -243,7 +304,7 @@ public class UnoGame extends Game {
     private void addCardsToStack() {
         UnoDeck deck = new UnoDeck();
         deck.shuffleDeck();
-        this.cards.addAll( deck.getDeck());
+        this.cards.addAll(deck.getDeck());
     }
 
     @Override

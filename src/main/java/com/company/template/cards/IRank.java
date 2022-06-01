@@ -9,4 +9,6 @@ package main.java.com.company.template.cards;
 public interface IRank {
 
     int getValue();
+    int ordinal();
+    int compareTo(IRank rank);
 }
