@@ -42,7 +42,7 @@ public class UnoMain {
                 //playable beachten
                 System.out.println("Karte im Deck wählen, die spielbar ist");
                 int auswahl = sc.nextInt();
-                uno.playCard(temp, temp.getDeck().getDeck().get(auswahl));
+                uno.playCard(temp, temp.getDeck().getCards().get(auswahl));
             }
             players.remove();
             players.add(temp);

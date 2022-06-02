@@ -3,8 +3,6 @@ package main.java.com.company.template;
 import main.java.com.company.template.cards.ICard;
 import main.java.com.company.template.cards.IDeck;
 
-import java.util.ArrayList;
-
 /**
  * Player
  *
@@ -18,6 +16,7 @@ public class Player {
     private int statesTrick;    //ist hier das gewünschte spiel für die runde
     private IDeck deck;
     private ICard playedCard = null;
+    private int wonTrick = 0;
 
     public Player(String name)
     {
@@ -39,6 +38,10 @@ public class Player {
 
     public int getPoints() {
         return this.point;
+    }
+
+    public void setPoints(int points) {
+        this.point = points;
     }
 
     public void resetPoints() {
@@ -65,11 +68,23 @@ public class Player {
         this.playedCard = playedCard;
     }
 
+    public int getWonTrick() {
+        return this.wonTrick;
+    }
+
+    public void setWonTrick() {
+        this.wonTrick++;
+    }
+
+    public void resetWonTrick() {
+        this.wonTrick = 0;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
                 "name='" + name + "\n" +
-                "numOfCards=" + deck.getDeck().size() + "\n" +
+                "numOfCards=" + deck.getCards().size() + "\n" +
                 "set=" + deck.printCards() + "\n" +
                 "}\n";
     }

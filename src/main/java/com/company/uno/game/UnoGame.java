@@ -24,7 +24,7 @@ import java.util.*;
 //TODO stats erstellen
 public class UnoGame extends Game {
     private final Queue<Player> players;
-    private List<ICard> cards;
+    private IDeck cards;
     private IDeck playedCards;
     private int cardsToDrawCounter;
     private boolean chooseColor = false;
@@ -43,12 +43,11 @@ public class UnoGame extends Game {
     private void initializeGame() {
 
         //Deck erstellen
-        IDeck deck = new UnoDeck();
-        deck.shuffleDeck();
-        this.cards = (List<ICard>) deck.getDeck();
+        this.cards = new UnoDeck();
+        this.cards.shuffleDeck();
 
         //Kartenanzahl erhöhen, wenn zu wenig Karten für Spieler vorhanden sind
-        while (players.size() * 7 > this.cards.size()) {
+        while (players.size() * 7 > this.cards.getCards().size() + 1) {
             addCardsToStack();
         }
 
@@ -58,7 +57,7 @@ public class UnoGame extends Game {
         //verteile Karten - jeder Spieler kriegt 7 Stück
         for (int i = 0; i < 7; i++) {
             for (Player p : this.players) {
-                p.addCard(this.cards.remove(0));
+                p.addCard(this.cards.deal());
             }
         }
 
@@ -66,7 +65,7 @@ public class UnoGame extends Game {
         this.playedCards = new UnoDeck(new ArrayList<>());
 
         //setze erste Karte für Ablagestapel
-        ICard first = this.cards.remove(0);
+        ICard first = this.cards.deal();
         this.playedCards.add(first);
 
         //setze Spielbarkeit bei allen Karten
@@ -147,7 +146,7 @@ public class UnoGame extends Game {
         }
 
         //checken, ob Karte auf der Hand des Spielers ist
-        if (player.getDeck().getDeck().contains(card) == false) {
+        if (player.getDeck().getCards().contains(card) == false) {
             System.err.println("Karte befindet sich nicht auf der Hand des Spielers");
             return;
         }
@@ -203,7 +202,7 @@ public class UnoGame extends Game {
         rotatePlayers();
 
         //prüfen ob nächster Spieler +2 auf der hand hat
-        boolean nextPlayerHasPlusTwo = this.players.peek().getDeck().getDeck()
+        boolean nextPlayerHasPlusTwo = this.players.peek().getDeck().getCards()
                 .stream()
                 .anyMatch(c -> c.getRank().equals(UnoRank.TAKE_TWO));
 
@@ -284,8 +283,8 @@ public class UnoGame extends Game {
     }
 
     private void drawSingleCard(Player player) {
-        ICard lastPlayed = this.playedCards.getDeck().get(this.playedCards.getDeck().size() -1);
-        long numOfPlayableCards = player.getDeck().getDeck()
+        ICard lastPlayed = this.playedCards.getCards().get(this.playedCards.getCards().size() -1);
+        long numOfPlayableCards = player.getDeck().getCards()
                 .stream()
                 .filter(ICard::isPlayable)
                 .count();
@@ -293,18 +292,18 @@ public class UnoGame extends Game {
         while(numOfPlayableCards == 0) {
             System.err.println("Es muss eine Karte nachgezogen werden");
             //Karten zu Ziehstapel hinzufügen wenn Stapel leer
-            if(this.cards.size() < 1) {
+            if(this.cards.getCards().size() < 1) {
                 addCardsToStack();
             }
 
             //Karte ziehen
-            player.addCard(this.cards.remove(0));
+            player.addCard(this.cards.deal());
 
             //isPlayable setzen
             player.getDeck().setPlayable(lastPlayed);
 
             //prüfen ob eine Karte spielbar ist
-            numOfPlayableCards = player.getDeck().getDeck()
+            numOfPlayableCards = player.getDeck().getCards()
                     .stream()
                     .filter(ICard::isPlayable)
                     .count();
@@ -314,13 +313,13 @@ public class UnoGame extends Game {
 
     private void drawCards(Player player) {
         //stapel erweitern wenn nicht genügend Karten zum ziehen vorhanden sind
-        while (this.cards.size() < this.cardsToDrawCounter) {
+        while (this.cards.getCards().size() < this.cardsToDrawCounter) {
             addCardsToStack();
         }
 
         //karten bei user hinzufügen
         for (int i = cardsToDrawCounter; i > 0; i--) {
-            player.addCard(this.cards.remove(0));
+            player.addCard(this.cards.deal());
         }
 
         this.cardsToDrawCounter = 0;
@@ -329,7 +328,7 @@ public class UnoGame extends Game {
     private void addCardsToStack() {
         UnoDeck deck = new UnoDeck();
         deck.shuffleDeck();
-        this.cards.addAll(deck.getDeck());
+        deck.getCards().forEach(c -> this.cards.add(c));
     }
 
     @Override

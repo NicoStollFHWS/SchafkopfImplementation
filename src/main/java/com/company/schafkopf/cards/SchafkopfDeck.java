@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class SchafkopfDeck implements IDeck {
 
     private final List<ICard> deck;
-    private SchafkopfCard firstPlayedSchafkopfCard = null;
+    private ICard firstPlayedSchafkopfCard = null;
     private ISuit trump = SchafkopfSuit.HERZ;
     private GameType type = GameType.NORMAL;
 
@@ -51,15 +51,15 @@ public class SchafkopfDeck implements IDeck {
         return this.deck.remove((SchafkopfCard) schafkopfCard);
     }
 
-    public List<ICard> getDeck() {
+    public List<ICard> getCards() {
         return this.deck;
     }
 
-    public SchafkopfCard getFirstPlayedCard() {
+    public ICard getFirstPlayedCard() {
         return firstPlayedSchafkopfCard;
     }
 
-    public void setFirstPlayedCard(SchafkopfCard playedWizardCard) {
+    public void setFirstPlayedCard(ICard playedWizardCard) {
         this.firstPlayedSchafkopfCard = playedWizardCard;
     }
 
@@ -74,6 +74,16 @@ public class SchafkopfDeck implements IDeck {
 
     public void setType(GameType type) {
         this.type = type;
+    }
+
+    @Override
+    public ICard deal() {
+        return this.deck.remove(0);
+    }
+
+    @Override
+    public void burn() {
+        throw new UnsupportedOperationException("Karten können nicht weggeworfen werden");
     }
 
     public void setTrump(SchafkopfSuit trump) {

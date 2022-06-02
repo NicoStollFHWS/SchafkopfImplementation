@@ -82,7 +82,7 @@ public class UnoDeck implements IDeck {
     }
 
     @Override
-    public List<ICard> getDeck() {
+    public List<ICard> getCards() {
         return this.cards;
     }
 
@@ -119,6 +119,21 @@ public class UnoDeck implements IDeck {
     @Override
     public void setType(GameType gameType) {
         throw new UnsupportedOperationException("Es gibt keinen Spieltyp in Uno");
+    }
+
+    @Override
+    public void setFirstPlayedCard(ICard card) {
+        throw new UnsupportedOperationException("Keine first played Card bei Uno");
+    }
+
+    @Override
+    public ICard deal() {
+        return this.cards.remove(0);
+    }
+
+    @Override
+    public void burn() {
+        throw new UnsupportedOperationException("Karten können nicht weggeworfen werden");
     }
 
 

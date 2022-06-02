@@ -56,11 +56,9 @@ public class Schafkopf extends Game {
         deck.shuffleDeck();
 
         //Karten verteilen
-        List<ICard> schafkopfCards = deck.getDeck();
-        while (schafkopfCards.size() != 0) {
+        while (deck.getCards().size() != 0) {
             for (Player p : this.players) {
-                ICard card = schafkopfCards.remove(0);
-                p.addCard(card);
+                p.addCard(deck.deal());
             }
         }
 
@@ -69,7 +67,7 @@ public class Schafkopf extends Game {
 
         //alle Karten auf playable setzen
         this.players.forEach(p -> {
-            p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true));
+            p.getDeck().getCards().forEach(wizardCard -> wizardCard.setPlayable(true));
         });
 
         //alle Karten sortieren
@@ -102,7 +100,7 @@ public class Schafkopf extends Game {
         this.playedCard = new SchafkopfDeck(new ArrayList<>());
 
         //alle Karten auf playable setzen
-        this.players.forEach(p -> p.getDeck().getDeck().forEach(wizardCard -> wizardCard.setPlayable(true)));
+        this.players.forEach(p -> p.getDeck().getCards().forEach(wizardCard -> wizardCard.setPlayable(true)));
 
         //Karten sortieren
         this.players.forEach(p -> p.getDeck().sortDeck());
@@ -228,7 +226,7 @@ public class Schafkopf extends Game {
         }
 
         //checken ob Karte gültig ist
-        if (temp.getDeck().getDeck().contains((SchafkopfCard) card) == false) {
+        if (temp.getDeck().getCards().contains((SchafkopfCard) card) == false) {
             System.err.println("Ungültige Karte gespielt; ist nicht auf der Hand");
             return;
         }
@@ -252,7 +250,7 @@ public class Schafkopf extends Game {
         player.setPlayedCard(card);
 
         //wenn erste Karte gespielt wurde muss für alle Karten angezeigt werden, ob sie spielbar sind
-        if (this.playedCard.getDeck().size() == 1) {
+        if (this.playedCard.getCards().size() == 1) {
             System.out.println("Playable setzen für Spieler");
             this.playedCard.setFirstPlayedCard((SchafkopfCard) card);
             this.players.forEach(p -> p.getDeck().setPlayable((SchafkopfCard) card));
@@ -275,7 +273,7 @@ public class Schafkopf extends Game {
 
     @Override
     public List<ICard> getPlayedCards() {
-        return new ArrayList<>(this.playedCard.getDeck());
+        return new ArrayList<>(this.playedCard.getCards());
     }
 
 
@@ -296,7 +294,7 @@ public class Schafkopf extends Game {
         this.playedCard.sortDeck();
 
         //höchste Karte finden
-        ICard max = this.playedCard.getDeck().get(0);
+        ICard max = this.playedCard.getCards().get(0);
 
         //spieler finden der die höchste Karte gelegt hat
         Player temp = this.players.stream()
@@ -309,10 +307,10 @@ public class Schafkopf extends Game {
 
         //Ausgabe des Gewinners und des Stiches
         System.err.println(temp);
-        System.err.println(this.playedCard.getDeck());
+        System.err.println(this.playedCard.getCards());
 
         //Punkte berechnen die in diesem Stich liegen
-        int points = this.playedCard.getDeck().stream()
+        int points = this.playedCard.getCards().stream()
                 .mapToInt(c -> c.getRank().getValue()).sum();
 
         //Punkt vergeben an Spieler

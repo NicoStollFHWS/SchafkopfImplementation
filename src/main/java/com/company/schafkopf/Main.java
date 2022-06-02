@@ -43,7 +43,7 @@ public class Main {
                 //playable beachten
                 System.out.println("Karte im Deck wählen, die spielbar ist");
                 int auswahl = sc.nextInt();
-                schafkopf.playCard(temp, temp.getDeck().getDeck().get(auswahl));
+                schafkopf.playCard(temp, temp.getDeck().getCards().get(auswahl));
             }
             players.remove();
             players.add(temp);

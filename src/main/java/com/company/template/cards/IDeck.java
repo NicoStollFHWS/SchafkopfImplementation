@@ -21,11 +21,15 @@ public interface IDeck {
     void add(ICard card);
     boolean remove(ICard card);
 
-    List<ICard> getDeck();
+    List<ICard> getCards();
 
     String printCards();
 
     void setPlayable(ICard first);
 
     void setType(GameType gameType);
+    void setFirstPlayedCard(ICard card);
+
+    ICard deal();
+    void burn();
 }

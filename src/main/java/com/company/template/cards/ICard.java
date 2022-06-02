@@ -18,7 +18,7 @@ public interface ICard {
     //wofür werden die jeweils benötigt
     /**
     String getSuitString();
-    int getNumberValue();
+     int getNumberValue();
     String getNumberVal();
     void setNumberValue(int numberValue);
     */
